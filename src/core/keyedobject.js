@@ -24,37 +24,55 @@ if (typeof define !== 'function') {
 }
 
 define(['./class', './key'], function(Class, Key) {
-    var KeyedObject = Class.extend({
-        init: function() {
-            this._key = null;
-            this._loaded = false;
-        },
+    var classdef = function() {
+        /* Private variables */
+        var _key = new Key();
+        var _loaded;
 
-        key: function(newkey) {
-            if (!newkey) {
-                return this._key;
+
+        return {
+            init: function() {
+                /* The unique key that identifies this object. */
+                Object.defineProperty(this, 'key', {
+                    get: function() { return _key; },
+                    set: function(key) {
+                        _key.read(key);
+                    }
+                });
+
+                /* Boolean indicating whether the object has been loaded. */
+                Object.defineProperty(this, 'loaded', {
+                    get: function() { return _loaded; }
+                });
+
+                /* The object's name (wrapper for key.name). */
+                Object.defineProperty(this, 'name', {
+                    get: function() { return _key.name; },
+                    set: function(val) { _key.name = val; }
+                });
+            },
+
+            on_loaded: function() {
+                _loaded = true;
+            },
+
+            read: function(s) {
+                if (typeof s.key === 'undefined') {
+                    throw 'Tried to read an object without a key!';
+                }
+
+                var newkey = new Key();
+                newkey.read(s.key);
+
+                if (_key.valid() && !_key.equals(newkey)) {
+                    throw 'Tried to change the key of an object!';
+                }
+
+                this.key = newkey;
             }
+        };
+    };
 
-            if (!this._key) {
-                this._key = new Key();
-            }
-            this._key.read(newkey);
-        },
-
-        read: function(data) {
-            if (!data.key) {
-                throw 'Tried to read an object without a key!';
-            }
-
-            var newkey = new Key();
-            newkey.read(data.key);
-
-            if (this._key && !newkey.equals(this._key)) {
-                throw 'Tried to change the key of an object!';
-            }
-            this._key.read(newkey);
-        }
-    });
-
+    var KeyedObject = Class.extend(classdef());
     return KeyedObject;
 });
