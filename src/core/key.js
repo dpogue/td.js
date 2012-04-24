@@ -23,46 +23,68 @@ if (typeof define !== 'function') {
     var define = require('amdefine')(module);
 }
 
-define(['./class'], function(Class) {
+define(function() {
     /**
      * Class that acts as a reference to a unique object of a fixed type.
-     *
-     * @variable type The index of the object type.
-     * @variable index The index of the object itself.
-     * @variable name The object name (optional).
      */
-    var Key = Class.extend({
-        init: function() {
-            this.type = null;
-            this.index = null;
-            this.name = null;
-        },
+    function Key() {
+        /* Private variables */
+        var _type;
+        var _index;
+        var _name = null;
 
-        read: function(obj) {
-            if (typeof obj.type  !== 'undefined' &&
-                typeof obj.index !== 'undefined')
+        /** The numeric class index of this key's object type. */
+        Object.defineProperty(this, 'type', {
+            get: function() { return _type; }
+        });
+
+        /** The index value of this key's object in the resource manager. */
+        Object.defineProperty(this, 'index', {
+            get: function() { return _index; }
+        });
+
+        /** The name of this key's object. */
+        Object.defineProperty(this, 'name', {
+            get: function() { return _name; },
+            set: function(val) { _name = val; }
+        });
+
+        this.read = function(s) {
+            if (typeof s.type  === 'undefined' ||
+                typeof s.index === 'undefined')
             {
-                this.type = obj.type;
-                this.index = obj.index;
-
-                if (obj.name) {
-                    this.name = obj.name;
-                } else {
-                    this.name = null;
-                }
-            } else {
                 console.warn('Tried to read an invalid key!');
+                throw 'Invalid Key';
             }
-        },
 
-        equals: function(key) {
-            if (!(key instanceof Key)) {
+            _type  = s.type;
+            _index = s.index;
+
+            if (typeof s.name !== 'undefined') {
+                _name = s.name;
+            }
+        };
+
+        this.valid = function() {
+            if (typeof _type === 'undefined') {
+                return false;
+            }
+            if (typeof _index === 'undefined') {
                 return false;
             }
 
-            return (this.type === key.type) && (this.index === key.index);
+            return true;
+        };
+
+        this.equals = function(other) {
+            if (!(other instanceof Key)) {
+                return false;
+            }
+
+            return  (this.type  === other.type) &&
+                    (this.index === other.index);
         }
-    });
+    }
 
     return Key;
 });

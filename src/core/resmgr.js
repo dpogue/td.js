@@ -36,14 +36,11 @@ define(['./class', './key'], function(Class, Key) {
             this.keylist = [];
         },
 
-        register_class: function(klass, clsidx) {
-            var type = clsidx;
-            if (!type) {
-                if (!(klass instanceof Function)) {
-                    throw 'Trying to register a non-class type';
-                }
-                type = klass.prototype.ClsIdx;
+        register_class: function(klass) {
+            if (!(klass instanceof Function)) {
+                throw 'Trying to register a non-class type';
             }
+            type = klass.prototype.ClsIdx;
 
             if (this.factory[type]) {
                 console.warn('Registering with an index that is already used!');
@@ -63,7 +60,7 @@ define(['./class', './key'], function(Class, Key) {
                 idx = this.keylist[type].length;
             }
             key.read({'type': type, 'index': idx});
-            obj.key(key);
+            obj.key = key;
             this.register_key(key, obj);
             return obj;
         },
@@ -74,7 +71,7 @@ define(['./class', './key'], function(Class, Key) {
             }
 
             var obj = new this.factory[key.type]();
-            obj.key(key);
+            obj.key = key;
             this.register_key(key, obj);
             return obj;
         },
@@ -126,7 +123,7 @@ define(['./class', './key'], function(Class, Key) {
 
             var obj = this.find_or_create(key);
             obj.read(data);
-            obj._loaded = true;
+            obj.on_loaded();
 
             return obj;
         },
@@ -155,7 +152,5 @@ define(['./class', './key'], function(Class, Key) {
 
     var globalResMgr = new ResManager(); /* Global Resource Manager */
 
-    return {
-        gResMgr: function() { return globalResMgr; }
-    };
+    return (function() { return globalResMgr; })();
 });

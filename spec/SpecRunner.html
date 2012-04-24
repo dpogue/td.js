@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Jasmine Spec Runner</title>
+  <link rel="stylesheet" href="jasmine/jasmine.css">
+
+  <script src="jasmine/jasmine.js"></script>
+  <script src="jasmine/jasmine-html.js"></script>
+  <script src="jasmine/require.js"></script>
+
+  <script type="text/javascript">
+    require.config({
+        paths: {
+            'spec': '../spec',
+            'src': '../src'
+        }
+    });
+
+    require([
+            'spec/core/key.spec',
+            'spec/models/game_object.spec'
+    ], function() {
+        var jasmineEnv = jasmine.getEnv();
+        jasmineEnv.updateInterval = 1000;
+
+        var trivialReporter = new jasmine.TrivialReporter();
+        jasmineEnv.addReporter(trivialReporter);
+        jasmineEnv.execute();
+    });
+  </script>
+</head>
+<body>
+</body>
+</html>
