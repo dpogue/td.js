@@ -1,22 +1,28 @@
 require(["unit"], function(Unit) {
-  var unit = new Unit('player-1', 10, 10),
+  var unit = new Unit({x: 10, y: 10}),
       force = {
         x: 0,
         y: 0
       };
+
+  unit.container = document.createElement('div');
+  unit.container.setAttribute('id', this.key);
+  unit.container.setAttribute('class', 'unit');
+  document.body.appendChild(unit.container);
+
 
   (function animloop(time){
     //if (time % 100 === 0) {
       render();
       //console.log(time);
     //}
-    console.log(unit.getPos().x + ', ' + unit.getPos().y);
+    //console.log(unit.position_x + ', ' + unit.position_y);
     //console.log(unit.getPos());
     window.webkitRequestAnimationFrame(animloop, unit.container);
   })(0);
 
   function render() {
-    unit.setForce(force);
+    unit.force = force;
     unit.update();
   }
 

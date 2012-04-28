@@ -11,21 +11,20 @@ if (typeof define !== 'function') {
 }
 
 define(function() {
-  return {
     /**
      *
      */
-    extend: function extend (target, source) {
+    var extend = function extend (target, source) {
       Object.getOwnPropertyNames(source).forEach(function(propName) {
         Object.defineProperty(target, propName, Object.getOwnPropertyDescriptor(source, propName));
       });
       return target;
-    },
+    };
 
     /**
      *
      */
-    inherits: (function () {
+    var inherits = (function () {
       // Use node's util.inherits().
       if (typeof module !== 'undefined' && module.exports) {
         return require('util').inherits;
@@ -44,8 +43,12 @@ define(function() {
           return SubC;
         };
       }
-    }())
-  };
+    }());
+
+    return {
+        extend: extend,
+        inherits: inherits
+    };
 });
 
 /**

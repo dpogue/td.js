@@ -31,11 +31,11 @@ define(['../core/util', '../core/keyedobject', '../core/resmgr'], function(Util,
             _rotation = '_gameobject_rotation',
             _scale = '_gameobject_scale';
 
-        objdef.prototype.ClsIdx = 0;
-
         var objdef = function() {
             objdef._super.constructor.call(this);
         };
+
+        objdef.prototype.ClsIdx = 0;
 
         /** An array of the object's X/Y position. */
         Object.defineProperty(objdef.prototype, 'position', {

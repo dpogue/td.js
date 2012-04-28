@@ -62,7 +62,7 @@ define(function (Class) {
             var len = this.length;
             return {
                 x: (_x / len),
-                    y: (_y / len)
+                y: (_y / len)
             };
         };
 

@@ -23,7 +23,7 @@ if (typeof define !== 'function') {
     var define = require('amdefine')(module);
 }
 
-define(['./key'], function(Key) {
+define(['./util', './key'], function(Util, Key) {
     var KeyedObject = function() {
         /* Private variables */
         var _key = '_keyedobject_key',
