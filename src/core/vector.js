@@ -23,49 +23,51 @@ if (typeof define !== 'function') {
     var define = require('amdefine')(module);
 }
 
-define(['./class'], function (Class) {
-    var classdef = function() {
+define(function (Class) {
+    var Vector = function() {
         /* Private variables */
-        var _x = 0;
-        var _y = 0;
-        var _length = null;
+        var _x = '_vector_x',
+            _y = '_vector_y',
+            _length = '_vector_length';
 
-        return {
-            init: function(x, y) {
-                _x = x || 0;
-                _y = y || 0;
+        var objdef = function(x, y) {
+            this[_x] = x || 0;
+            this[_y] = y || 0;
+        };
 
-                Object.defineProperty(this, 'x', {
-                    get: function() { return _x; },
-                    set: function(x) { _x = x; _length = null; }
-                });
+        Object.defineProperty(objdef.prototype, 'x', {
+            get: function() { return this[_x]; },
+            set: function(x) { this[_x] = x; this[_length] = null; }
+        });
 
-                Object.defineProperty(this, 'y', {
-                    get: function() { return _y; },
-                    set: function(y) { _y = y; _length = null; }
-                });
-            },
+        Object.defineProperty(objdef.prototype, 'y', {
+            get: function() { return this[_y]; },
+            set: function(y) { this[_y] = y; this[_length] = null; }
+        });
 
-            length: function() {
+
+        Object.defineProperty(objdef.prototype, 'length', {
+            get: function() {
                 /* Cache the length until X or Y changes.
                  * This saves us from calling sqrt unless necessary. */
-                if (_length === null) {
-                    _length = Math.sqrt((_x * _x) + (_y * _y));
+                if (this[_length] === null) {
+                    this[_length] = Math.sqrt((this.x * this.x) + (this.y * this.y));
                 }
 
-                return _length;
-            },
-
-            normalized: function() {
-                var len = this.length();
-                return {
-                    x: (_x / len),
-                    y: (_y / len)
-                };
+                return this[_length];
             }
-        };
-    };
+        });
 
-    var Vector = Class.extend(classdef());
+        objdef.prototype.normalized = function() {
+            var len = this.length;
+            return {
+                x: (_x / len),
+                    y: (_y / len)
+            };
+        };
+
+        return objdef;
+    }();
+
     return Vector;
 });

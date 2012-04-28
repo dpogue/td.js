@@ -23,20 +23,20 @@ if (typeof define !== 'function') {
     var define = require('amdefine')(module);
 }
 
-define(['./class', './key'], function(Class, Key) {
+define(['./key'], function(Key) {
 
     /**
      * Singleton that manages all the objects and object types.
      * @variable factory An array of type constructors.
      * @variable keys An array of arrays of objects, keyed by type and index.
      */
-    var ResManager = Class.extend({
-        init: function() {
+    var ResManager = function() {
+        var objdef = function() {
             this.factory = [];
             this.keylist = [];
-        },
+        };
 
-        register_class: function(klass) {
+        objdef.prototype.register_class = function(klass) {
             if (!(klass instanceof Function)) {
                 throw 'Trying to register a non-class type';
             }
@@ -47,9 +47,9 @@ define(['./class', './key'], function(Class, Key) {
             }
 
             this.factory[type] = klass;
-        },
+        };
 
-        new_object: function(type) {
+        objdef.prototype.new_object = function(type) {
             if (!this.factory[type]) {
                 throw 'Trying to create an object of an nonexistent type!';
             }
@@ -63,9 +63,9 @@ define(['./class', './key'], function(Class, Key) {
             obj.key = key;
             this.register_key(key, obj);
             return obj;
-        },
+        };
 
-        add_object: function(key) {
+        objdef.prototype.add_object = function(key) {
             if (this.find(key)) {
                 return;
             }
@@ -74,9 +74,9 @@ define(['./class', './key'], function(Class, Key) {
             obj.key = key;
             this.register_key(key, obj);
             return obj;
-        },
+        };
 
-        register_key: function(key, obj) {
+        objdef.prototype.register_key = function(key, obj) {
             if (!(key instanceof Key)) {
                 throw 'Invalid key passed to ResManager.register_key!';
             }
@@ -85,9 +85,9 @@ define(['./class', './key'], function(Class, Key) {
                 this.keylist[key.type] = [];
             }
             this.keylist[key.type][key.index] = obj;
-        },
+        };
 
-        find: function(key) {
+        objdef.prototype.find = function(key) {
             if (!(key instanceof Key)) {
                 throw 'Invalid key passed to ResManager.find!';
             }
@@ -101,9 +101,9 @@ define(['./class', './key'], function(Class, Key) {
                 return null;
             }
             return obj;
-        },
+        };
 
-        find_or_create: function(key) {
+        objdef.prototype.find_or_create = function(key) {
             var obj = this.find(key);
 
             if (!obj) {
@@ -111,9 +111,9 @@ define(['./class', './key'], function(Class, Key) {
             }
 
             return obj;
-        },
+        };
 
-        read: function(data) {
+        objdef.prototype.read = function(data) {
             if (!data.key) {
                 throw "Tried to read an object without a key!";
             }
@@ -126,9 +126,9 @@ define(['./class', './key'], function(Class, Key) {
             obj.on_loaded();
 
             return obj;
-        },
+        };
 
-        load: function(source) {
+        objdef.prototype.load = function(source) {
             if (source instanceof Array) {
                 /* We got an array of objects */
                 source.forEach(function(o) {
@@ -147,10 +147,12 @@ define(['./class', './key'], function(Class, Key) {
                 console.error('Unknown source data passed to ResManager!');
                 console.warn('Silently continuing');
             }
-        }
-    });
+        };
+
+        return objdef;
+    }();
 
     var globalResMgr = new ResManager(); /* Global Resource Manager */
 
-    return (function() { return globalResMgr; })();
+    return (function() { return globalResMgr; }());
 });

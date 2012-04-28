@@ -23,62 +23,67 @@ if (typeof define !== 'function') {
     var define = require('amdefine')(module);
 }
 
-define(['../core/keyedobject', '../core/resmgr'], function(KeyedObject, mgr) {
+define(['../core/util', '../core/keyedobject', '../core/resmgr'], function(Util, KeyedObject, mgr) {
 
-    var classdef = function() {
-        var _posX = 0;
-        var _posY = 0;
-        var _rotation = 0;
-        var _scale = 1.0;
+    var GameObject = function() {
+        var _posX = '_gameobject_posx',
+            _posY = '_gameobject_posy',
+            _rotation = '_gameobject_rotation',
+            _scale = '_gameobject_scale';
 
-        return {
-            ClsIdx: 0,
+        objdef.prototype.ClsIdx = 0;
 
-            init: function() {
-                this._super();
+        var objdef = function() {
+            objdef._super.constructor.call(this);
+        };
 
-                /** An array of the object's X/Y position. */
-                Object.defineProperty(this, 'position', {
-                    get: function() { return [_posX, _posY]; }
-                });
-                /** The object's X position. */
-                Object.defineProperty(this, 'position_x', {
-                    get: function() { return _posX; }
-                });
-                /** The object's Y position. */
-                Object.defineProperty(this, 'position_y', {
-                    get: function() { return _posY; }
-                });
-                /** The object's rotation in degrees (from east). */
-                Object.defineProperty(this, 'rotation', {
-                    get: function() { return _rotation; }
-                });
-                /** The scale of the game object. (Do we need separate X/Y?) */
-                Object.defineProperty(this, 'scale', {
-                    get: function() { return _scale; }
-                });
-            },
+        /** An array of the object's X/Y position. */
+        Object.defineProperty(objdef.prototype, 'position', {
+            get: function() { return [this[_posX], this[_posY]]; }
+        });
+        /** The object's X position. */
+        Object.defineProperty(objdef.prototype, 'position_x', {
+            get: function() { return this[_posX]; },
+            set: function(posX) { this[_posX] = posX; }
+        });
+        /** The object's Y position. */
+        Object.defineProperty(objdef.prototype, 'position_y', {
+            get: function() { return this[_posY]; },
+            set: function(posY) { this[_posY] = posY; }
+        });
+        /** The object's rotation in degrees (from east). */
+        Object.defineProperty(objdef.prototype, 'rotation', {
+            get: function() { return this[_rotation]; },
+            set: function(degree) { this[_rotation] = degree; }
+        });
+        /** The scale of the game object. (Do we need separate X/Y?) */
+        Object.defineProperty(objdef.prototype, 'scale', {
+            get: function() { return this[_scale]; }
+        });
 
-            read: function(s) {
-                this._super(s);
+        // Overridden.
+        objdef.prototype.read = function(s) {
+            this._super.read.call(this, s);
 
-                if ('x' in s) {
-                    _posX = s.x;
-                }
-                if ('y' in s) {
-                    _posY = s.y;
-                }
-                if ('r' in s) {
-                    _rotation = s.r;
-                }
-                if ('s' in s) {
-                    _scale = s.s;
-                }
+            if ('x' in s) {
+                this[_posX] = s.x;
+            }
+            if ('y' in s) {
+                this[_posY] = s.y;
+            }
+            if ('r' in s) {
+                this[_rotation] = s.r;
+            }
+            if ('s' in s) {
+                this[_scale] = s.s;
             }
         };
-    };
+        
+        return objdef;
+    }();
 
-    var GameObject = KeyedObject.extend(classdef());
+    Util.inherits(GameObject, KeyedObject);
     mgr.register_class(GameObject);
+
     return GameObject;
 });
