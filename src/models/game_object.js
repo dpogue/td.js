@@ -74,6 +74,17 @@ define(['../core/keyedobject', '../core/resmgr'], function(KeyedObject, mgr) {
                 if ('s' in s) {
                     _scale = s.s;
                 }
+            },
+
+            write: function() {
+                var s = this._super();
+
+                s.x = _posX;
+                s.y = _posY;
+                s.r = _rotation;
+                s.s = _scale;
+
+                return s;
             }
         };
     };

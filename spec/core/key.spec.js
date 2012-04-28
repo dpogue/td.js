@@ -30,6 +30,36 @@ describe('Key', function() {
         expect(k.name).toBe(null);
     });
 
+    it('should write its state as JSON', function() {
+        var stream = {
+            type: 1,
+            index: 1
+        };
+
+        var k = new Key();
+        k.read(stream);
+
+        var jsobj = k.write();
+        expect(jsobj.type).toBe(stream.type);
+        expect(jsobj.index).toBe(stream.index);
+    });
+
+    it('should write its state as JSON with a name', function() {
+        var stream = {
+            type: 1,
+            index: 1,
+            name: 'Test Key'
+        };
+
+        var k = new Key();
+        k.read(stream);
+
+        var jsobj = k.write();
+        expect(jsobj.type).toBe(stream.type);
+        expect(jsobj.index).toBe(stream.index);
+        expect(jsobj.name).toBe(stream.name);
+    });
+
     it('should not allow direct mutation', function() {
         var k = new Key();
 
@@ -73,6 +103,21 @@ describe('Key', function() {
         k3.read(stream);
 
         expect(k.equals(k3)).toBe(false);
+    });
+
+    it('should read and write the same key', function() {
+        var stream = {
+            type: 1,
+            index: 1
+        };
+
+        var k = new Key();
+        k.read(stream);
+
+        var k2 = new Key();
+        k2.read(k.write());
+
+        expect(k2.equals(k)).toBe(true);
     });
 });
 

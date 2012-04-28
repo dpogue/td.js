@@ -65,6 +65,18 @@ define(function() {
             }
         };
 
+        this.write = function() {
+            var s = {
+                type: _type,
+                index: _index
+            };
+            if (_name != null) {
+                s.name = _name;
+            }
+
+            return s;
+        };
+
         this.valid = function() {
             if (typeof _type === 'undefined') {
                 return false;

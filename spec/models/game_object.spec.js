@@ -40,6 +40,29 @@ describe('GameObject', function() {
         expect(go.position_y).toBe(5);
         expect(go.rotation).toBe(180);
     });
+
+    it('should write out a JSON object', function() {
+        var stream = {
+            key: {
+                type: 0,
+                index: 1,
+                name: 'Test Game Object'
+            },
+            x: 10,
+            y: 5,
+            r: 90,
+            s: 1.5
+        };
+
+        var go = mgr.read(stream);
+
+        var jsobj = go.write();
+
+        expect(jsobj.x).toBe(stream.x);
+        expect(jsobj.y).toBe(stream.y);
+        expect(jsobj.r).toBe(stream.r);
+        expect(jsobj.s).toBe(stream.s);
+    });
 });
 
 });

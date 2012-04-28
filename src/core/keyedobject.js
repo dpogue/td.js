@@ -69,6 +69,12 @@ define(['./class', './key'], function(Class, Key) {
                 }
 
                 this.key = newkey;
+            },
+
+            write: function() {
+                return {
+                    key: _key.write()
+                };
             }
         };
     };
