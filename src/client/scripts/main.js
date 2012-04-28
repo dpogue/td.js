@@ -1,29 +1,42 @@
 require(["unit"], function(Unit) {
-  var unit = new Unit({x: 10, y: 10}),
-      force = {
-        x: 0,
-        y: 0
-      };
+    var unit = new Unit({x: 10, y: 10}),
+        force = {
+            x: 0,
+            y: 0
+        };
 
-  unit.container = document.createElement('div');
-  unit.container.setAttribute('id', this.key);
-  unit.container.setAttribute('class', 'unit');
-  document.body.appendChild(unit.container);
+    unit.container = document.createElement('div');
+    unit.container.setAttribute('id', this.key);
+    unit.container.setAttribute('class', 'unit');
+    document.body.appendChild(unit.container);
 
+    var forceX = document.getElementById('force-x'),
+        forceY = document.getElementById('force-y'),
+        velocityX = document.getElementById('velocity-x'),
+        velocityY = document.getElementById('velocity-y'),
+        positionX = document.getElementById('position-x'),
+        positionY = document.getElementById('position-y');
 
-  (function animloop(time){
-    //if (time % 100 === 0) {
+    function updateStats() {
+        forceX.textContent = unit.force.x;
+        forceY.textContent = unit.force.y;
+        velocityX.textContent = unit.velocity.x;
+        velocityY.textContent = unit.velocity.y;
+        positionX.textContent = unit.position_x;
+        positionY.textContent = unit.position_y;
+    }
+
+    (function animloop(time){
       render();
-      //console.log(time);
-    //}
-    //console.log(unit.position_x + ', ' + unit.position_y);
-    //console.log(unit.getPos());
-    window.webkitRequestAnimationFrame(animloop, unit.container);
-  })(0);
+
+      window.webkitRequestAnimationFrame(animloop, unit.container);
+    })(0);
 
   function render() {
     unit.force = force;
     unit.update();
+
+    updateStats();
   }
 
   document.addEventListener('keydown', function (evt) {
