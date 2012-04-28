@@ -85,6 +85,7 @@ define(['../../core/util', '../../models/game_object', '../../core/vector'], fun
             } else {
                 temp_vector.y = force.y * (this.accel + this.decel) + temp_vector.y;
             }
+
             if (temp_vector.length > this.maxVelocity) {
                 var normal = temp_vector.normalized();
                 this.velocity = new Vector(normal.x * this.maxVelocity, normal.y * this.maxVelocity);
@@ -97,16 +98,16 @@ define(['../../core/util', '../../models/game_object', '../../core/vector'], fun
                 var vel_x = this.velocity.x;
                 if (vel_x > 0) {
                     if ((vel_x - this.decel) < 0) {
-                        this.velocity.x = 0;
+                        this.velocity = new Vector(0, this.velocity.y);
                     } else {
-                        this.velocity.x = vel_x - this.decel;
+                        this.velocity = new Vector(vel_x - this.decel, this.velocity.y);
                     }
                 }
                 else if (vel_x < 0) {
                     if ((vel_x + this.decel) > 0) {
-                        this.velocity.x = 0;
+                        this.velocity = new Vector(0, this.velocity.y);
                     } else {
-                        this.velocity.x = vel_x + this.decel;
+                        this.velocity = new Vector(vel_x + this.decel, this.velocity.y);
                     }
                 }
             }
@@ -116,24 +117,29 @@ define(['../../core/util', '../../models/game_object', '../../core/vector'], fun
                 var vel_y = this.velocity.y;
                 if (vel_y > 0) {
                     if ((vel_y - this.decel) < 0) {
-                        this.velocity.y = 0;
+                        this.velocity = new Vector(this.velocity.x, 0);
                     } else {
-                        this.velocity.y = vel_y - this.decel;
+                        this.velocity = new Vector(this.velocity.x,  vel_y - this.decel);
                     }
                 }
                 else if (vel_y < 0) {
                     if ((vel_y + this.decel) > 0) {
-                        this.velocity.y = 0;
+                        this.velocity = new Vector(this.velocity.x, 0);
                     } else {
-                        this.velocity.y = vel_y + this.decel;
+                        this.velocity = new Vector(this.velocity.x,  vel_y + this.decel);
                     }
                 }
             }
         };
 
         objdef.prototype.applyVelocity = function () {
-            this.position_x = this.position_x + Math.round(this.velocity.x);
-            this.position_y = this.position_y + Math.round(this.velocity.y);
+            var changeX = this.velocity.x;
+            var changeY = this.velocity.y;
+
+            if (changeX === 0 && changeY === 0) return;
+
+            this.position_x += changeX;
+            this.position_y += changeY;
 
             this.move(this.velocity);
         };
@@ -197,7 +203,7 @@ define(['../../core/util', '../../models/game_object', '../../core/vector'], fun
             }
         };
 
-        objdef.prototype.move = function (vector) {
+        objdef.prototype.move = function () {
             this.container.style.webkitTransform = 'translate(' + this.position_x + 'px, ' + this.position_y + 'px)';
             //this.container.style.top = this.getPos().y;
             //this.container.style.left = this.getPos().x;
