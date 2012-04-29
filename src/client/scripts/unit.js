@@ -158,26 +158,42 @@ define(['../../core/util', '../../models/game_object', '../../core/vector'], fun
                 angle = Math.atan(vel_y / vel_x) * (180 / Math.PI);
 
                 if (vel_x > 0) {
+                    // "E"
                     if (vel_y === 0) {
                         degree = 0;
-                    } else if (vel_x === vel_y) {
-                        degree = 315;
-                    } else if (vel_x === (-vel_y)) {
+                    }
+                    // "SE"
+                    else if (vel_x === vel_y) {
                         degree = 45;
-                    } else if (angle < 0) {
-                        degree = (-angle);
-                    } else {
-                        degree = 360 - angle;
+                    }
+                    // "NE"
+                    else if (vel_x === (-vel_y)) {
+                        degree = 315;
+                    }
+
+                    else if (angle < 0) {
+                        degree = (+angle);
+                    }
+
+                    else {
+                        degree = 360 + angle;
                     }
                 } else if (vel_x < 0) {
+                    // "W"
                     if (vel_y === 0) {
                         degree = 180;
-                    } else if (vel_x === vel_y) {
-                        degree = 135;
-                    } else if (vel_x === (-vel_y)) {
+                    }
+                    // "NW"
+                    else if (vel_x === vel_y) {
                         degree = 225;
-                    } else {
-                        degree = 180 - angle;
+                    }
+                    // "SW"
+                    else if (vel_x === (-vel_y)) {
+                        degree = 135;
+                    }
+
+                    else {
+                        degree = 180 + angle;
                     }
                 }
             } else if (Math.abs(vel_y) > Math.abs(vel_x)) {
@@ -185,15 +201,15 @@ define(['../../core/util', '../../models/game_object', '../../core/vector'], fun
 
                 if (vel_y < 0) {
                     if (vel_x === 0) {
-                        degree = 90;
+                        degree = 270;
                     } else {
-                        degree = 90 + angle;
+                        degree = 270 - angle;
                     }
                 } else if (vel_y > 0) {
                     if (vel_x === 0) {
-                        degree = 270;
+                        degree = 90;
                     } else {
-                        degree = 270 + angle;
+                        degree = 90 - angle;
                     }
                 }
             }
@@ -205,6 +221,7 @@ define(['../../core/util', '../../models/game_object', '../../core/vector'], fun
 
         objdef.prototype.move = function () {
             this.container.style.webkitTransform = 'translate(' + this.position_x + 'px, ' + this.position_y + 'px)';
+            this.container.style.webkitTransform += 'rotate(' + this.rotation + 'deg)';
             //this.container.style.top = this.getPos().y;
             //this.container.style.left = this.getPos().x;
         };

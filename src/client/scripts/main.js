@@ -5,18 +5,22 @@ require(["unit"], function(Unit) {
             y: 0
         };
 
+    // Creating unit DOM element.
     unit.container = document.createElement('div');
     unit.container.setAttribute('id', this.key);
     unit.container.setAttribute('class', 'unit');
     document.body.appendChild(unit.container);
 
+    // Grabbing stats DOM elements.
     var forceX = document.getElementById('force-x'),
         forceY = document.getElementById('force-y'),
         velocityX = document.getElementById('velocity-x'),
         velocityY = document.getElementById('velocity-y'),
         positionX = document.getElementById('position-x'),
-        positionY = document.getElementById('position-y');
+        positionY = document.getElementById('position-y'),
+        rotation = document.getElementById('rotation');
 
+    // Stats update callback.
     function updateStats() {
         forceX.textContent = unit.force.x;
         forceY.textContent = unit.force.y;
@@ -24,6 +28,7 @@ require(["unit"], function(Unit) {
         velocityY.textContent = unit.velocity.y;
         positionX.textContent = unit.position_x;
         positionY.textContent = unit.position_y;
+        rotation.textContent = unit.rotation;
     }
 
     (function animloop(time){
@@ -32,42 +37,35 @@ require(["unit"], function(Unit) {
       window.webkitRequestAnimationFrame(animloop, unit.container);
     })(0);
 
-  function render() {
-    unit.force = force;
-    unit.update();
+    function render() {
+        unit.force = force;
+        unit.update();
 
-    updateStats();
-  }
+        updateStats();
+    }
 
-  document.addEventListener('keydown', function (evt) {
-    // Left
-    if (force.x === 0 && evt.keyCode === 37) {
-      force.x = -1;
-    }
-    // Up
-    else if (force.y === 0 && evt.keyCode === 38) {
-      force.y = -1;
-    }
-    // Right
-    else if (force.x === 0 && evt.keyCode === 39) {
-      force.x = 1;
-    }
-    // Down
-    else if (force.y === 0 && evt.keyCode === 40) {
-      force.y = 1;
-    }
-  });
-
-  document.addEventListener('keyup', function (evt) {
-    // Left
-    // Right
-    if (evt.keyCode === 37 || evt.keyCode === 39) {
-      force.x = 0;
-    }
-    // Up
-    // Down
-    else if (evt.keyCode === 38 || evt.keyCode === 40) {
-      force.y = 0;
-    }
-  });
+    // Handling input.
+    var processKey = function (evt) {
+        var event = (evt.type === 'keydown') ? 1 : 0;
+        switch (evt.keyCode) {
+            // Up
+            case 38:
+                force.y = event * -1;
+                break;
+            // Down
+            case 40:
+                force.y = event;
+                break;
+            // Left
+            case 37:
+                force.x = event * -1;
+                break;
+            // Right
+            case 39:
+                force.x = event;
+                break;
+        }
+    };
+    document.addEventListener('keydown', processKey);
+    document.addEventListener('keyup', processKey);
 });
