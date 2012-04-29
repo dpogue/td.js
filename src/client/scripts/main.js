@@ -54,7 +54,7 @@ require(["unit"], function(Unit) {
         unit2.force = force;
         unit2.update();
 
-        //updateStats();
+        updateStats();
     }
 
     // Handling input.
