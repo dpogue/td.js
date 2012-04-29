@@ -86,10 +86,8 @@ define(['../../core/util', '../../models/game_object', '../../core/vector'], fun
                 temp_vector.y = force.y * (this.accel + this.decel) + temp_vector.y;
             }
 
-            if (temp_vector.length > this.maxVelocity) {
-                var normal = temp_vector.normalized();
-                this.velocity = new Vector(normal.x * this.maxVelocity, normal.y * this.maxVelocity);
-            } else {
+            // TODO: We never completely reach this.maxVelocity.
+            if (temp_vector.length < this.maxVelocity) {
                 this.velocity = temp_vector;
             }
 
