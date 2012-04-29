@@ -1,5 +1,9 @@
 require(["unit"], function(Unit) {
-    var unit = new Unit({x: 10, y: 10}),
+    var win_w = document.width,
+        win_h = document.height;
+
+    var unit = new Unit({x: (win_w / 2) - 20, y: win_h / 4}),
+        unit2 = new Unit({x: (win_w / 2) + 20, y: win_h / 4}, 10),
         force = {
             x: 0,
             y: 0
@@ -10,6 +14,12 @@ require(["unit"], function(Unit) {
     unit.container.setAttribute('id', this.key);
     unit.container.setAttribute('class', 'unit');
     document.body.appendChild(unit.container);
+
+    // Creating unit DOM element.
+    unit2.container = document.createElement('div');
+    unit2.container.setAttribute('id', this.key);
+    unit2.container.setAttribute('class', 'unit2');
+    document.body.appendChild(unit2.container);
 
     // Grabbing stats DOM elements.
     var forceX = document.getElementById('force-x'),
@@ -41,7 +51,10 @@ require(["unit"], function(Unit) {
         unit.force = force;
         unit.update();
 
-        updateStats();
+        unit2.force = force;
+        unit2.update();
+
+        //updateStats();
     }
 
     // Handling input.

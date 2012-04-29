@@ -12,12 +12,12 @@ define(['../../core/util', '../../models/game_object', '../../core/vector'], fun
             _force = '_unit_force',
             _velocity = '_unit_velocity';
 
-        var objdef = function (pos) {
+        var objdef = function (pos, maxVelocity) {
             objdef._super.constructor.call(this);
 
             this[_accel] = 0.3;
             this[_decel] = 0.6;
-            this[_maxVelocity] = 5;
+            this[_maxVelocity] = maxVelocity || 5;
             this[_force] = new Vector();
             this[_velocity] = new Vector();
 
