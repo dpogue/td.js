@@ -1,9 +1,9 @@
 require(["unit"], function(Unit) {
-    var win_w = document.width,
-        win_h = document.height;
+    var win_w = window.innerWidth,
+        win_h = window.innerHeight;
 
-    var unit = new Unit({x: (win_w / 2) - 20, y: win_h / 4}),
-        unit2 = new Unit({x: (win_w / 2) + 20, y: win_h / 4}, 10),
+    var unit = new Unit({x: (win_w / 2) - 20, y: win_h / 2}),
+        unit2 = new Unit({x: (win_w / 2) + 20, y: win_h / 2}, 10),
         force = {
             x: 0,
             y: 0

@@ -3,8 +3,6 @@
   height: 40px;
   position: absolute;
   width: 20px;
-  -webkit-transition: all 0.01s linear;
-  -webkit-transform: translateZ(0);
   border-right: 3px solid #000;
 }
 
