@@ -63,7 +63,7 @@ define(['../core/util', '../core/keyedobject', '../core/resmgr'], function(Util,
 
         // Overridden.
         objdef.prototype.read = function(s) {
-            this._super.read.call(this, s);
+            objdef._super.read.call(this, s);
 
             if ('x' in s) {
                 this[_posX] = s.x;

@@ -1,4 +1,4 @@
-require(["unit"], function(Unit) {
+require(["src/models/unit"], function(Unit) {
     var win_w = window.innerWidth,
         win_h = window.innerHeight;
 

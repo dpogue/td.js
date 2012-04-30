@@ -2,7 +2,7 @@ if (typeof define !== 'function') {
     var define = require('amdefine')(module);
 }
 
-define(['../../core/util', '../../models/game_object', '../../core/vector'], function (Util, GameObject, Vector) {
+define(['../core/util', './game_object', '../core/vector'], function (Util, GameObject, Vector) {
     //"use strict";
 
     var Unit = function() {
@@ -64,6 +64,12 @@ define(['../../core/util', '../../models/game_object', '../../core/vector'], fun
         });
 
         objdef.prototype.update = function () {
+            if ((this[_velocity].x | 0) == 0 &&
+                (this[_velocity].y | 0) == 0 &&
+                (this[_force].x    | 0) == 0 &&
+                (this[_force].y    | 0) == 0)
+                return;
+
             this.applyForce();
             this.applyVelocity();
             this.applyDirection();
