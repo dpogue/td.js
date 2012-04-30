@@ -1,4 +1,4 @@
-require(["src/models/unit"], function(Unit) {
+require(["src/models/unit", 'src/client/stats'], function(Unit, Stats) {
     var win_w = window.innerWidth,
         win_h = window.innerHeight;
 
@@ -8,6 +8,13 @@ require(["src/models/unit"], function(Unit) {
             x: 0,
             y: 0
         };
+
+    var stats = new Stats();
+    stats.getDomElement().style.position = 'absolute';
+    stats.getDomElement().style.right = '0px';
+    stats.getDomElement().style.top = '0px';
+
+    document.body.appendChild(stats.getDomElement());
 
     // Creating unit DOM element.
     unit.container = document.createElement('div');
@@ -43,6 +50,8 @@ require(["src/models/unit"], function(Unit) {
 
     (function animloop(time){
       render();
+
+      stats.update();
 
       window.webkitRequestAnimationFrame(animloop, unit.container);
     })(0);
