@@ -63,6 +63,44 @@ describe('GameObject', function() {
         expect(jsobj.r).toBe(stream.r);
         expect(jsobj.s).toBe(stream.s);
     });
+
+    it('should not share state', function() {
+        var stream1 = {
+            key: {
+                type: 0,
+                index: 1,
+                name: 'Test Game Object'
+            },
+            x: 10,
+            y: 5,
+            r: 90,
+            s: 1.5
+        };
+        var stream2 = {
+            key: {
+                type: 0,
+                index: 2,
+                name: 'Test Game Object'
+            },
+            x: 15,
+            y: -5,
+            r: 180,
+            s: 1.0
+        };
+
+        var go1 = mgr.read(stream1);
+        var go2 = mgr.read(stream2);
+
+        expect(go1.position_x).toBe(10);
+        expect(go1.position_y).toBe(5);
+        expect(go1.rotation).toBe(90);
+        expect(go1.scale).toBe(1.5);
+
+        expect(go2.position_x).toBe(15);
+        expect(go2.position_y).toBe(-5);
+        expect(go2.rotation).toBe(180);
+        expect(go2.scale).toBe(1.0);
+    });
 });
 
 });

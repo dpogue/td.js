@@ -23,62 +23,64 @@ if (typeof define !== 'function') {
     var define = require('amdefine')(module);
 }
 
-define(['./class', './key'], function(Class, Key) {
-    var classdef = function() {
+define(['./util', './key'], function(Util, Key) {
+    var KeyedObject = function() {
         /* Private variables */
-        var _key = new Key();
-        var _loaded;
+        var _key = '_keyedobject_key',
+            _loaded = '_keyedobject_loaded';
 
-
-        return {
-            init: function() {
-                /* The unique key that identifies this object. */
-                Object.defineProperty(this, 'key', {
-                    get: function() { return _key; },
-                    set: function(key) {
-                        _key.read(key);
-                    }
-                });
-
-                /* Boolean indicating whether the object has been loaded. */
-                Object.defineProperty(this, 'loaded', {
-                    get: function() { return _loaded; }
-                });
-
-                /* The object's name (wrapper for key.name). */
-                Object.defineProperty(this, 'name', {
-                    get: function() { return _key.name; },
-                    set: function(val) { _key.name = val; }
-                });
-            },
-
-            on_loaded: function() {
-                _loaded = true;
-            },
-
-            read: function(s) {
-                if (typeof s.key === 'undefined') {
-                    throw 'Tried to read an object without a key!';
-                }
-
-                var newkey = new Key();
-                newkey.read(s.key);
-
-                if (_key.valid() && !_key.equals(newkey)) {
-                    throw 'Tried to change the key of an object!';
-                }
-
-                this.key = newkey;
-            },
-
-            write: function() {
-                return {
-                    key: _key.write()
-                };
-            }
+        var objdef = function() {
+            this[_key] = new Key();
+            this[_loaded] = null;
         };
-    };
 
-    var KeyedObject = Class.extend(classdef());
+        /* The unique key that identifies this object. */
+        Object.defineProperty(objdef.prototype, 'key', {
+            // TODO: Verify safe to return object reference?
+            get: function() { return this[_key]; },
+            set: function(key) {
+                this[_key].read(key);
+            }
+        });
+
+        /* Boolean indicating whether the object has been loaded. */
+        Object.defineProperty(objdef.prototype, 'loaded', {
+            get: function() { return this[_loaded]; }
+        });
+
+        /* The object's name (wrapper for key.name). */
+        Object.defineProperty(objdef.prototype, 'name', {
+            get: function() { return this[_key].name; },
+            set: function(val) { this[_key].name = val; }
+        });
+
+        objdef.prototype.on_loaded = function() {
+            this[_loaded] = true;
+        };
+
+        objdef.prototype.read = function(s) {
+            if (typeof s.key === 'undefined') {
+                throw 'Tried to read an object without a key!';
+            }
+
+            var newkey = new Key();
+            newkey.read(s.key);
+
+            if (this[_key].valid() && !this[_key].equals(newkey)) {
+                throw 'Tried to change the key of an object!';
+            }
+
+            this.key = newkey;
+        };
+
+        objdef.prototype.write = function() {
+            return {
+                key: this[_key].write()
+            };
+        };
+
+        return objdef;
+    }();
+
     return KeyedObject;
 });
