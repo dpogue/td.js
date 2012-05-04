@@ -28,7 +28,8 @@ define(function (Class) {
         /* Private variables */
         var _x = '_vector_x',
             _y = '_vector_y',
-            _length = '_vector_length';
+            _length = '_vector_length',
+            _length_sq = '_vector_length_sq';
 
         var objdef = function(x, y) {
             this[_x] = x || 0;
@@ -51,10 +52,20 @@ define(function (Class) {
                 /* Cache the length until X or Y changes.
                  * This saves us from calling sqrt unless necessary. */
                 if (this[_length] === null) {
-                    this[_length] = Math.sqrt((this.x * this.x) + (this.y * this.y));
+                    this[_length] = Math.sqrt(this.lengthSq);
                 }
 
                 return this[_length];
+            }
+        });
+
+        Object.defineProperty(objdef.prototype, 'lengthSq', {
+            get: function() {
+                if (this[_length] === null || this[_length_sq] === null) {
+                    this[_length_sq] = (this.x * this.x) + (this.y * this.y);
+                }
+
+                return this[_length_sq];
             }
         });
 

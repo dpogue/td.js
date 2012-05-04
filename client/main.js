@@ -63,6 +63,7 @@ require(["src/models/unit", 'src/client/stats'], function(Unit, Stats) {
         unit2.force = force;
         unit2.update();
 
+        // This is SLOW!
         updateStats();
     }
 

@@ -64,19 +64,16 @@ define(['../core/util', './game_object', '../core/vector'], function (Util, Game
         });
 
         objdef.prototype.update = function () {
-            if ((this[_velocity].x | 0) == 0 &&
-                (this[_velocity].y | 0) == 0 &&
-                (this[_force].x    | 0) == 0 &&
-                (this[_force].y    | 0) == 0)
+            if (((this[_velocity].lengthSq | 0) == 0) && ((this[_force].lengthSq | 0) == 0))
                 return;
 
             this.applyForce();
-            this.applyVelocity();
             this.applyDirection();
+            this.applyVelocity();
         };
 
         objdef.prototype.applyForce = function () {
-            var force = this.force,
+            var force = this[_force],
                 temp_vector = this.velocity,
                 vector = new Vector(force.x * temp_vector.x, force.y * temp_vector.y);
 
@@ -93,72 +90,79 @@ define(['../core/util', './game_object', '../core/vector'], function (Util, Game
             }
 
             // TODO: We never completely reach this.maxVelocity.
-            if (temp_vector.length < this.maxVelocity) {
-                this.velocity = temp_vector;
+            if (temp_vector.length >= this.maxVelocity) {
+                temp_vector.x = this[_velocity].x;
+                temp_vector.y = this[_velocity].y;
             }
 
             if (force.x === 0) {
                 // deceleration towards 0
-                var vel_x = this.velocity.x;
+                var vel_x = this[_velocity].x;
                 if (vel_x > 0) {
                     if ((vel_x - this.decel) < 0) {
-                        this.velocity = new Vector(0, this.velocity.y);
+                        temp_vector.x = 0;
                     } else {
-                        this.velocity = new Vector(vel_x - this.decel, this.velocity.y);
+                        temp_vector.x = vel_x - this.decel;
                     }
                 }
                 else if (vel_x < 0) {
                     if ((vel_x + this.decel) > 0) {
-                        this.velocity = new Vector(0, this.velocity.y);
+                        temp_vector.x = 0;
                     } else {
-                        this.velocity = new Vector(vel_x + this.decel, this.velocity.y);
+                        temp_vector.x = vel_x + this.decel;
                     }
                 }
             }
 
             if (force.y === 0) {
                 // deceleration towards 0
-                var vel_y = this.velocity.y;
+                var vel_y = this[_velocity].y;
                 if (vel_y > 0) {
                     if ((vel_y - this.decel) < 0) {
-                        this.velocity = new Vector(this.velocity.x, 0);
+                        temp_vector.y = 0;
                     } else {
-                        this.velocity = new Vector(this.velocity.x,  vel_y - this.decel);
+                        temp_vector.y = vel_y - this.decel;
                     }
                 }
                 else if (vel_y < 0) {
                     if ((vel_y + this.decel) > 0) {
-                        this.velocity = new Vector(this.velocity.x, 0);
+                        temp_vector.y = 0;
                     } else {
-                        this.velocity = new Vector(this.velocity.x,  vel_y + this.decel);
+                        temp_vector.y = vel_y + this.decel;
                     }
                 }
             }
+
+            this.velocity = temp_vector;
         };
 
         objdef.prototype.applyVelocity = function () {
-            var changeX = this.velocity.x;
-            var changeY = this.velocity.y;
+            var changeX = this[_velocity].x;
+            var changeY = this[_velocity].y;
 
-            if (changeX === 0 && changeY === 0) return;
+            if ((changeX | 0) == 0 && (changeY | 0) == 0)
+                return;
 
-            this.position_x += changeX;
-            this.position_y += changeY;
+            this.position_x = this.position_x + changeX;
+            this.position_y = this.position_y + changeY;
 
-            this.move(this.velocity);
+            this.move();
         };
 
         objdef.prototype.applyDirection = function () {
             var angle = 0;
             var degree = 0;
-            var vel_x = this.velocity.x;
-            var vel_y = this.velocity.y;
+            var vel_x = this[_velocity].x;
+            var vel_y = this[_velocity].y;
 
-            if (vel_x === 0 && vel_y === 0) {
+            if ((vel_x | 0) == 0 && (vel_y | 0) == 0) {
                 return;
             }
 
-            if (Math.abs(vel_x) >= Math.abs(vel_y)) {
+            var abs_x = (vel_x ^ (vel_x >> 31)) - (vel_x >> 31);
+            var abs_y = (vel_y ^ (vel_y >> 31)) - (vel_y >> 31);
+
+            if (abs_x >= abs_y) {
                 angle = Math.atan(vel_y / vel_x) * (180 / Math.PI);
 
                 if (vel_x > 0) {
@@ -200,7 +204,7 @@ define(['../core/util', './game_object', '../core/vector'], function (Util, Game
                         degree = 180 + angle;
                     }
                 }
-            } else if (Math.abs(vel_y) > Math.abs(vel_x)) {
+            } else if (abs_y > abs_x) {
                 angle = Math.atan(vel_x / vel_y) * (180 / Math.PI);
 
                 if (vel_y < 0) {
