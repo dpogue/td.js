@@ -34,55 +34,23 @@ require(["src/models/unit", 'src/client/stats'], function(Unit, Stats) {
 
     document.body.appendChild(stats.getDomElement());
 
-    // Creating unit DOM element.
-    unit.container = document.createElement('div');
-    unit.container.setAttribute('id', this.key);
-    unit.container.setAttribute('class', 'unit');
-    document.body.appendChild(unit.container);
-
-    // Creating unit DOM element.
-    unit2.container = document.createElement('div');
-    unit2.container.setAttribute('id', this.key);
-    unit2.container.setAttribute('class', 'unit2');
-    document.body.appendChild(unit2.container);
-
-    // Grabbing stats DOM elements.
-    var forceX = document.getElementById('force-x'),
-        forceY = document.getElementById('force-y'),
-        velocityX = document.getElementById('velocity-x'),
-        velocityY = document.getElementById('velocity-y'),
-        positionX = document.getElementById('position-x'),
-        positionY = document.getElementById('position-y'),
-        rotation = document.getElementById('rotation');
-
-    // Stats update callback.
-    function updateStats() {
-        forceX.textContent = unit.force.x;
-        forceY.textContent = unit.force.y;
-        velocityX.textContent = unit.velocity.x;
-        velocityY.textContent = unit.velocity.y;
-        positionX.textContent = unit.position_x;
-        positionY.textContent = unit.position_y;
-        rotation.textContent = unit.rotation;
-    }
 
     (function animloop(time){
       render();
 
       stats.update();
 
-      window.webkitRequestAnimationFrame(animloop, unit.container);
+      window.webkitRequestAnimationFrame(animloop);
     })(0);
 
     function render() {
-        unit.force = force;
-        unit.update();
-
-        unit2.force = force;
-        unit2.update();
+        for (var i in units) {
+            units[i].force = force;
+            units[i].update();
+        }
 
         // This is SLOW!
-        updateStats();
+        //updateStats(units[0]);
     }
 
     // Handling input.
@@ -109,4 +77,24 @@ require(["src/models/unit", 'src/client/stats'], function(Unit, Stats) {
     };
     document.addEventListener('keydown', processKey);
     document.addEventListener('keyup', processKey);
+
+    // Grabbing stats DOM elements.
+    var forceX = document.getElementById('force-x'),
+        forceY = document.getElementById('force-y'),
+        velocityX = document.getElementById('velocity-x'),
+        velocityY = document.getElementById('velocity-y'),
+        positionX = document.getElementById('position-x'),
+        positionY = document.getElementById('position-y'),
+        rotation = document.getElementById('rotation');
+
+    // Stats update callback.
+    function updateStats(unit) {
+        forceX.innerHTML = unit.force.x;
+        forceY.innerHTML = unit.force.y;
+        velocityX.innerHTML = unit.velocity.x;
+        velocityY.innerHTML = unit.velocity.y;
+        positionX.innerHTML = unit.position_x;
+        positionY.innerHTML = unit.position_y;
+        rotation.innerHTML = unit.rotation;
+    }
 });
