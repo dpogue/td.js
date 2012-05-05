@@ -155,7 +155,7 @@ define(['../core/util', './game_object', '../core/vector'], function (Util, Game
             var vel_x = this[_velocity].x;
             var vel_y = this[_velocity].y;
 
-            if ((vel_x | 0) == 0 && (vel_y | 0) == 0) {
+            if ((vel_x | 0) === 0 && (vel_y | 0) === 0) {
                 return;
             }
 
