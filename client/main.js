@@ -44,57 +44,31 @@ require(["src/models/unit", 'src/client/stats'], function(Unit, Stats) {
     })(0);
 
     function render() {
+        force.y = 0;
+        force.x = 0;
+        if (input.up ^ input.down) {
+            force.y = (input.up) ? -1 : 1;
+        }
+        if (input.left ^ input.right) {
+            force.x = (input.left) ? -1 : 1;
+        }
+
         for (var i in units) {
             units[i].force = force;
             units[i].update();
         }
-
-        // This is SLOW!
-        //updateStats(units[0]);
     }
 
     // Handling input.
     var processKey = function (evt) {
-        var event = (evt.type === 'keydown') ? 1 : 0;
-        switch (evt.keyCode) {
-            // Up
-            case 38:
-                force.y = event * -1;
-                break;
-            // Down
-            case 40:
-                force.y = event;
-                break;
-            // Left
-            case 37:
-                force.x = event * -1;
-                break;
-            // Right
-            case 39:
-                force.x = event;
-                break;
+        var keys = ['left', 'up', 'right', 'down'];
+        var event = (evt.type === 'keydown') ? 1 : 0,
+            key = keys[evt.keyCode - 37];
+
+        if (key !== undefined && event !== input[key]) {
+            input[key] = event;
         }
     };
     document.addEventListener('keydown', processKey);
     document.addEventListener('keyup', processKey);
-
-    // Grabbing stats DOM elements.
-    var forceX = document.getElementById('force-x'),
-        forceY = document.getElementById('force-y'),
-        velocityX = document.getElementById('velocity-x'),
-        velocityY = document.getElementById('velocity-y'),
-        positionX = document.getElementById('position-x'),
-        positionY = document.getElementById('position-y'),
-        rotation = document.getElementById('rotation');
-
-    // Stats update callback.
-    function updateStats(unit) {
-        forceX.innerHTML = unit.force.x;
-        forceY.innerHTML = unit.force.y;
-        velocityX.innerHTML = unit.velocity.x;
-        velocityY.innerHTML = unit.velocity.y;
-        positionX.innerHTML = unit.position_x;
-        positionY.innerHTML = unit.position_y;
-        rotation.innerHTML = unit.rotation;
-    }
 });

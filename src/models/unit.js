@@ -23,13 +23,6 @@ define(['../core/util', './game_object', '../core/vector'], function (Util, Game
 
             this.position_x = pos.x;
             this.position_y = pos.y;
-
-            /*
-            this.container = document.createElement('div');
-            this.container.setAttribute('id', this.key);
-            this.container.setAttribute('class', 'unit');
-            document.body.appendChild(this.container);
-            */
         };
 
         /** Unit's acceleration. */
