@@ -1,39 +1,23 @@
-require(["src/models/unit", 'src/client/stats'], function(Unit, Stats) {
+require(["src/client/models/unit", 'src/client/stats'], function(Unit, Stats) {
     var win_w = window.innerWidth,
         win_h = window.innerHeight;
 
-    var units = [],
+    var input = {'left': 0, 'up': 0, 'right': 0, 'down': 0},
         force = {
             x: 0,
             y: 0
         };
 
-    Unit.prototype.initDiv = function(color) {
-        this.container = document.createElement('div');
-        this.container.setAttribute('id', this.key);
-        this.container.setAttribute('class', 'unit');
-        this.container.style["background-color"] = color;
-        document.body.appendChild(this.container);
-        return this;
-    };
-
-    Unit.prototype.move = function () {
-        var translate = 'translate3d(' + this.position_x + 'px, ' + this.position_y + 'px, 0) ';
-            rotate = 'rotate(' + this.rotation + 'deg)';
-
-        this.container.style.webkitTransform = translate + " " + rotate;
-    };
-
-    units.push(new Unit({x: (win_w / 2) - 20, y: win_h / 2}, 6).initDiv("blue"));
-    units.push(new Unit({x: (win_w / 2) + 20, y: win_h / 2}, 10).initDiv("red"));
+    var units = [
+        new Unit({x: (win_w / 2) - 20, y: win_h / 2}, 6).initDiv("blue"),
+        new Unit({x: (win_w / 2) + 20, y: win_h / 2}, 10).initDiv("red")
+    ];
 
     var stats = new Stats();
     stats.getDomElement().style.position = 'absolute';
     stats.getDomElement().style.right = '0px';
     stats.getDomElement().style.top = '0px';
-
     document.body.appendChild(stats.getDomElement());
-
 
     (function animloop(time){
       render();
