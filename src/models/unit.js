@@ -64,7 +64,7 @@ define(['../core/util', './game_object', '../core/vector'], function (Util, Game
         });
 
         objdef.prototype.update = function () {
-            if (((this[_velocity].lengthSq | 0) == 0) && ((this[_force].lengthSq | 0) == 0))
+            if (((this[_velocity].lengthSq | 0) === 0) && ((this[_force].lengthSq | 0) === 0))
                 return;
 
             this.applyForce();
@@ -140,7 +140,7 @@ define(['../core/util', './game_object', '../core/vector'], function (Util, Game
             var changeX = this[_velocity].x;
             var changeY = this[_velocity].y;
 
-            if ((changeX | 0) == 0 && (changeY | 0) == 0)
+            if ((changeX | 0) === 0 && (changeY | 0) === 0)
                 return;
 
             this.position_x = this.position_x + changeX;
