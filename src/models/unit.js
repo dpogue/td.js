@@ -227,18 +227,6 @@ define(['../core/util', './game_object', '../core/vector'], function (Util, Game
             }
         };
 
-        objdef.prototype.move = function () {
-            var translate = 'translate3d(' + this.position_x + 'px, ' + this.position_y + 'px, 0) ';
-                rotate = 'rotate(' + this.rotation + 'deg)';
-
-            this.container.style.webkitTransform = translate + " " + rotate;
-
-            //this.container.style.webkitTransform = 'translate(' + this.position_x + 'px, ' + this.position_y + 'px)';
-            //this.container.style.webkitTransform = 'rotate(' + this.rotation + 'deg)';
-            //this.container.style.top = this.position_y;
-            //this.container.style.left = this.position_x;
-        };
-
         return objdef;
     }();
     Util.inherits(Unit, GameObject);

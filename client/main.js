@@ -2,12 +2,30 @@ require(["src/models/unit", 'src/client/stats'], function(Unit, Stats) {
     var win_w = window.innerWidth,
         win_h = window.innerHeight;
 
-    var unit = new Unit({x: (win_w / 2) - 20, y: win_h / 2}),
-        unit2 = new Unit({x: (win_w / 2) + 20, y: win_h / 2}, 10),
+    var units = [],
         force = {
             x: 0,
             y: 0
         };
+
+    Unit.prototype.initDiv = function(color) {
+        this.container = document.createElement('div');
+        this.container.setAttribute('id', this.key);
+        this.container.setAttribute('class', 'unit');
+        this.container.style["background-color"] = color;
+        document.body.appendChild(this.container);
+        return this;
+    };
+
+    Unit.prototype.move = function () {
+        var translate = 'translate3d(' + this.position_x + 'px, ' + this.position_y + 'px, 0) ';
+            rotate = 'rotate(' + this.rotation + 'deg)';
+
+        this.container.style.webkitTransform = translate + " " + rotate;
+    };
+
+    units.push(new Unit({x: (win_w / 2) - 20, y: win_h / 2}, 6).initDiv("blue"));
+    units.push(new Unit({x: (win_w / 2) + 20, y: win_h / 2}, 10).initDiv("red"));
 
     var stats = new Stats();
     stats.getDomElement().style.position = 'absolute';
