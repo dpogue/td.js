@@ -72,8 +72,8 @@ define(function (Class) {
         objdef.prototype.normalized = function() {
             var len = this.length;
             return {
-                x: (_x / len),
-                y: (_y / len)
+                x: (this[_x] / len),
+                y: (this[_y] / len)
             };
         };
 

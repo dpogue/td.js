@@ -84,13 +84,14 @@ define(['../core/util', './game_object', '../core/vector'], function (Util, Game
 
             // TODO: We never completely reach this.maxVelocity.
             if (temp_vector.length >= this.maxVelocity) {
-                temp_vector.x = this[_velocity].x;
-                temp_vector.y = this[_velocity].y;
+                temp_vector = temp_vector.normalized();
+                temp_vector.x *= this[_maxVelocity];
+                temp_vector.y *= this[_maxVelocity];
             }
 
             if (force.x === 0) {
                 // deceleration towards 0
-                var vel_x = this[_velocity].x;
+                var vel_x = temp_vector.x;
                 if (vel_x > 0) {
                     if ((vel_x - this.decel) < 0) {
                         temp_vector.x = 0;
@@ -109,7 +110,7 @@ define(['../core/util', './game_object', '../core/vector'], function (Util, Game
 
             if (force.y === 0) {
                 // deceleration towards 0
-                var vel_y = this[_velocity].y;
+                var vel_y = temp_vector.y;
                 if (vel_y > 0) {
                     if ((vel_y - this.decel) < 0) {
                         temp_vector.y = 0;
