@@ -10,8 +10,12 @@ define(["src/models/unit", '../browser_helper'], function(Unit, Helper) {
     };
 
     Unit.prototype.move = function () {
-        var translate = 'translate3d(' + this.position_x + 'px, ' + this.position_y + 'px, 0) ';
+        var translate = 'translate3d(' + this.position_x + 'px, ' + this.position_y + 'px, 0)',
             rotate = 'rotate(' + this.rotation + 'deg)';
+
+        if (Helper.transform[0] === 'O') {
+            translate = 'translate(' + this.position_x + 'px, ' + this.position_y + 'px)';
+        }
 
         this.container.style[Helper.transform] = translate + " " + rotate;
     };
