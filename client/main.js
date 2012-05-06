@@ -1,4 +1,4 @@
-require(["src/client/models/unit", 'src/client/stats', 'src/client/browser_helper'], function(Unit, Stats, Helper) {
+require(['domReady!', "src/client/models/unit", 'src/client/stats', 'src/client/browser_helper'], function(doc, Unit, Stats, Helper) {
     var win_w = window.innerWidth,
         win_h = window.innerHeight;
 
@@ -17,7 +17,7 @@ require(["src/client/models/unit", 'src/client/stats', 'src/client/browser_helpe
     stats.getDomElement().style.position = 'absolute';
     stats.getDomElement().style.right = '0px';
     stats.getDomElement().style.top = '0px';
-    document.body.appendChild(stats.getDomElement());
+    doc.body.appendChild(stats.getDomElement());
 
     var animloop = function(time) {
         Helper.requestAnimationFrame.apply(window, [animloop]);
@@ -53,6 +53,6 @@ require(["src/client/models/unit", 'src/client/stats', 'src/client/browser_helpe
             input[key] = event;
         }
     };
-    document.addEventListener('keydown', processKey);
-    document.addEventListener('keyup', processKey);
+    doc.addEventListener('keydown', processKey);
+    doc.addEventListener('keyup', processKey);
 });

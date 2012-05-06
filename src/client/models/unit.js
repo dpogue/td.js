@@ -1,4 +1,4 @@
-define(["src/models/unit", 'src/client/browser_helper'], function(Unit, Helper) {
+define(["src/models/unit", '../browser_helper'], function(Unit, Helper) {
 
     Unit.prototype.initDiv = function(color) {
         this.container = document.createElement('div');
