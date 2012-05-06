@@ -19,11 +19,6 @@
  * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
  * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-if (typeof define !== 'function') {
-    var define = require('amdefine')(module);
-}
-
-
 //stats.js -- https://github.com/mrdoob/stats.js
 define([], function() {
     var Stats = function() {

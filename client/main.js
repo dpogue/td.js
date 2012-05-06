@@ -1,4 +1,4 @@
-require(["src/client/models/unit", 'src/client/stats'], function(Unit, Stats) {
+require(["src/client/models/unit", 'src/client/stats', 'src/client/browser_helper'], function(Unit, Stats, Helper) {
     var win_w = window.innerWidth,
         win_h = window.innerHeight;
 
@@ -19,13 +19,13 @@ require(["src/client/models/unit", 'src/client/stats'], function(Unit, Stats) {
     stats.getDomElement().style.top = '0px';
     document.body.appendChild(stats.getDomElement());
 
-    (function animloop(time){
-      render();
+    var animloop = function(time) {
+        Helper.requestAnimationFrame.apply(window, [animloop]);
 
-      stats.update();
-
-      window.webkitRequestAnimationFrame(animloop);
-    })(0);
+        render();
+        stats.update();
+    };
+    animloop(0);
 
     function render() {
         force.y = 0;
