@@ -1,0 +1,14 @@
+{
+  "author": "Darryl Pogue & Tom Nightingale",
+  "name": "server",
+  "version": "0.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/dpogue/td.js.git"
+  },
+  "engines": {
+    "node": "~0.6.17"
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}
