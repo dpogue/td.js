@@ -6,6 +6,7 @@ define(["src/models/unit", '../browser_helper'], function(Unit, Helper) {
         this.container.setAttribute('class', 'unit');
         this.container.style["backgroundColor"] = color;
         document.body.appendChild(this.container);
+
         return this;
     };
 

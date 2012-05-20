@@ -1,4 +1,12 @@
-require(['domReady!', "src/client/models/unit", 'src/client/stats', 'src/client/browser_helper'], function(doc, Unit, Stats, Helper) {
+require([
+    'domReady!',
+    'socket.io',
+    'src/core/resmgr',
+    'src/client/models/unit',
+    'src/client/stats',
+    'src/client/browser_helper'
+], function(doc, io, mgr, Unit, Stats, Helper) {
+
     var win_w = window.innerWidth,
         win_h = window.innerHeight;
 
@@ -8,10 +16,8 @@ require(['domReady!', "src/client/models/unit", 'src/client/stats', 'src/client/
             y: 0
         };
 
-    var units = [
-        new Unit({x: (win_w / 2) - 20, y: win_h / 2}, 6).initDiv("blue"),
-        new Unit({x: (win_w / 2) + 20, y: win_h / 2}, 10).initDiv("red")
-    ];
+    var units = [],
+        player;
 
     var stats = new Stats();
     stats.getDomElement().style.position = 'absolute';
@@ -36,9 +42,13 @@ require(['domReady!', "src/client/models/unit", 'src/client/stats', 'src/client/
         if (input.left ^ input.right) {
             force.x = (input.left) ? -1 : 1;
         }
+        if (player) {
+            player.force = force;
+            player.update();
+            socket.emit('update', player.write());
+        }
 
         for (var i in units) {
-            units[i].force = force;
             units[i].update();
         }
     }
@@ -55,4 +65,27 @@ require(['domReady!', "src/client/models/unit", 'src/client/stats', 'src/client/
     };
     doc.addEventListener('keydown', processKey);
     doc.addEventListener('keyup', processKey);
+
+    var socket = io.connect('http://localhost');
+    socket.on('confirm', function (data) {
+        player = mgr.read(data).initDiv("blue");
+    });
+    socket.on('list', function (list) {
+        for (var i in list) {
+            units.push(mgr.read(list[i]).initDiv("magenta"));
+        }
+    });
+    socket.on('new player', function (data) {
+        units.push(mgr.read(data).initDiv("magenta"));
+    });
+    socket.on('update', function (data) {
+        var updated = mgr.read(data);
+        for (var i in units) {
+            if (units[i].key.equals(updated.key)) {
+                units[i].position_x = updated.position_x;
+                units[i].position_y = updated.position_y;
+                units[i].update();
+            }
+        }
+    });
 });

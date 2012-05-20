@@ -2,7 +2,7 @@ if (typeof define !== 'function') {
     var define = require('amdefine')(module);
 }
 
-define(['../core/util', './game_object', '../core/vector'], function (Util, GameObject, Vector) {
+define(['../core/util', './game_object', '../core/resmgr', '../core/vector'], function (Util, GameObject, mgr, Vector) {
     //"use strict";
 
     var Unit = function() {
@@ -12,7 +12,7 @@ define(['../core/util', './game_object', '../core/vector'], function (Util, Game
             _force = '_unit_force',
             _velocity = '_unit_velocity';
 
-        var objdef = function (pos, maxVelocity) {
+        var objdef = function (maxVelocity) {
             objdef._super.constructor.call(this);
 
             this[_accel] = 0.3;
@@ -20,10 +20,9 @@ define(['../core/util', './game_object', '../core/vector'], function (Util, Game
             this[_maxVelocity] = maxVelocity || 5;
             this[_force] = new Vector();
             this[_velocity] = new Vector();
-
-            this.position_x = pos.x;
-            this.position_y = pos.y;
         };
+
+        objdef.prototype.ClsIdx = 1;
 
         /** Unit's acceleration. */
         Object.defineProperty(objdef.prototype, 'accel', {
@@ -55,6 +54,48 @@ define(['../core/util', './game_object', '../core/vector'], function (Util, Game
                 this[_velocity].y = velocity.y;
             }
         });
+
+        // Overridden.
+        objdef.prototype.read = function(s) {
+            objdef._super.read.call(this, s);
+
+            if ('accel' in s) {
+                this[_accel] = s.accel;
+            }
+            if ('decel' in s) {
+                this[_decel] = s.decel;
+            }
+            if ('maxVelocity' in s) {
+                this[_maxVelocity] = s.maxVelocity;
+            }
+            if ('force' in s) {
+                this[_force].x = s.force.x;
+                this[_force].y = s.force.y;
+            }
+            if ('velocity' in s) {
+                this[_velocity].x = s.velocity.x;
+                this[_velocity].y = s.velocity.y;
+            }
+        };
+
+        // Overridden.
+        objdef.prototype.write = function() {
+            var s = objdef._super.write.call(this);
+
+            s.accel = this[_accel];
+            s.decel = this[_decel];
+            s.maxVelocity = this[_maxVelocity];
+            s.force = {
+                x: this[_force].x,
+                y: this[_force].y
+            };
+            s.velocity = {
+                x: this[_velocity].x,
+                y: this[_velocity].y
+            };
+
+            return s;
+        };
 
         objdef.prototype.update = function () {
             if (((this[_velocity].lengthSq | 0) === 0) && ((this[_force].lengthSq | 0) === 0))
@@ -224,6 +265,7 @@ define(['../core/util', './game_object', '../core/vector'], function (Util, Game
         return objdef;
     }();
     Util.inherits(Unit, GameObject);
+    mgr.register_class(Unit);
 
     return Unit;
 });

@@ -4,6 +4,8 @@
   <meta charset="utf-8">
   <title>td.js</title>
   <link rel="stylesheet" href="styles.css">
+  <!-- Loading non-AMD script into global scope for our own AMD wrapper to access. -->
+  <script src="/socket.io/socket.io.js"></script>
   <script>
       var require = {
           paths: {
