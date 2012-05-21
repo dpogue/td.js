@@ -3,18 +3,10 @@ require([
     'socket.io',
     'src/core/resmgr',
     'src/client/models/unit',
+    'src/client/models/human_force',
     'src/client/stats',
     'src/client/browser_helper'
-], function(doc, io, mgr, Unit, Stats, Helper) {
-
-    var win_w = window.innerWidth,
-        win_h = window.innerHeight;
-
-    var input = {'left': 0, 'up': 0, 'right': 0, 'down': 0},
-        force = {
-            x: 0,
-            y: 0
-        };
+], function(doc, io, mgr, Unit, HumanForce, Stats, Helper) {
 
     var units = [],
         player;
@@ -34,16 +26,7 @@ require([
     animloop(0);
 
     function render() {
-        force.y = 0;
-        force.x = 0;
-        if (input.up ^ input.down) {
-            force.y = (input.up) ? -1 : 1;
-        }
-        if (input.left ^ input.right) {
-            force.x = (input.left) ? -1 : 1;
-        }
         if (player) {
-            player.force = force;
             player.update();
             socket.emit('update', player.write());
         }
@@ -53,22 +36,11 @@ require([
         }
     }
 
-    // Handling input.
-    var processKey = function (evt) {
-        var keys = ['left', 'up', 'right', 'down'];
-        var event = (evt.type === 'keydown') ? 1 : 0,
-            key = keys[evt.keyCode - 37];
-
-        if (key !== undefined && event !== input[key]) {
-            input[key] = event;
-        }
-    };
-    doc.addEventListener('keydown', processKey);
-    doc.addEventListener('keyup', processKey);
-
     var socket = io.connect('http://localhost');
     socket.on('confirm', function (data) {
         player = mgr.read(data).initDiv("blue");
+        player.force = new HumanForce();
+
     });
     socket.on('list', function (list) {
         for (var i in list) {

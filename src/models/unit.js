@@ -2,7 +2,12 @@ if (typeof define !== 'function') {
     var define = require('amdefine')(module);
 }
 
-define(['../core/util', './game_object', '../core/resmgr', '../core/vector'], function (Util, GameObject, mgr, Vector) {
+define([
+    '../core/util',
+    './game_object',
+    '../core/resmgr',
+    '../core/vector'
+], function (Util, GameObject, mgr, Vector) {
     //"use strict";
 
     var Unit = function() {
@@ -41,8 +46,9 @@ define(['../core/util', './game_object', '../core/resmgr', '../core/vector'], fu
         Object.defineProperty(objdef.prototype, 'force', {
             get: function () { return new Vector(this[_force].x, this[_force].y); },
             set: function (force) {
-                this[_force].x = force.x;
-                this[_force].y = force.y;
+                // this[_force].x = force.x;
+                // this[_force].y = force.y;
+                this[_force] = force;
             }
         });
 
@@ -98,8 +104,8 @@ define(['../core/util', './game_object', '../core/resmgr', '../core/vector'], fu
         };
 
         objdef.prototype.update = function () {
-            if (((this[_velocity].lengthSq | 0) === 0) && ((this[_force].lengthSq | 0) === 0))
-                return;
+            // if (((this[_velocity].lengthSq | 0) === 0) && ((this[_force].lengthSq | 0) === 0))
+            //     return;
 
             this.applyForce();
             this.applyDirection();
