@@ -9,7 +9,7 @@ require([
 ], function(doc, io, mgr, Unit, HumanForce, Stats, Helper) {
 
     var units = [],
-        player;
+        player1, player2;
 
     var stats = new Stats();
     stats.getDomElement().style.position = 'absolute';
@@ -26,9 +26,12 @@ require([
     animloop(0);
 
     function render() {
-        if (player) {
-            player.update();
-            socket.emit('update', player.write());
+        if (player1) {
+            player1.update();
+            socket.emit('update', player1.write());
+        }
+        if (player2) {
+            player2.update();
         }
 
         for (var i in units) {
@@ -38,9 +41,18 @@ require([
 
     var socket = io.connect('http://localhost');
     socket.on('confirm', function (data) {
-        player = mgr.read(data).initDiv("blue");
-        player.force = new HumanForce();
+        player1 = mgr.read(data).initDiv("blue");
+        player1.force = new HumanForce();
 
+        player2 = mgr.new_object(Unit.prototype.ClsIdx).initDiv("yellow");
+        player2.position_x = 50;
+        player2.position_y = 50;
+        player2.force = new HumanForce({
+            up: 87,
+            left: 65,
+            right: 68,
+            down: 83
+        });
     });
     socket.on('list', function (list) {
         for (var i in list) {
