@@ -104,8 +104,8 @@ define([
         };
 
         objdef.prototype.update = function () {
-            // if (((this[_velocity].lengthSq | 0) === 0) && ((this[_force].lengthSq | 0) === 0))
-            //     return;
+            if (((this[_velocity].lengthSq | 0) === 0) && ((this[_force].lengthSq | 0) === 0))
+                return;
 
             this.applyForce();
             this.applyDirection();

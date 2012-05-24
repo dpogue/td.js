@@ -62,7 +62,7 @@ define(function (Class) {
         Object.defineProperty(objdef.prototype, 'lengthSq', {
             get: function() {
                 if (this[_length] === null || this[_length_sq] === null) {
-                    this[_length_sq] = (this.x * this.x) + (this.y * this.y);
+                    this[_length_sq] = (this[_x] * this[_x]) + (this[_y] * this[_y]);
                 }
 
                 return this[_length_sq];
