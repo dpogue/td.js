@@ -27,11 +27,13 @@ define(['./util', './key'], function(Util, Key) {
     var KeyedObject = function() {
         /* Private variables */
         var _key = '_keyedobject_key',
-            _loaded = '_keyedobject_loaded';
+            _loaded = '_keyedobject_loaded',
+            _needs_write = '_keyedobject_needs_write';
 
         var objdef = function() {
             this[_key] = new Key();
             this[_loaded] = null;
+            this[_needs_write] = false;
         };
 
         /* The unique key that identifies this object. */
@@ -48,6 +50,11 @@ define(['./util', './key'], function(Util, Key) {
             get: function() { return this[_loaded]; }
         });
 
+        Object.defineProperty(objdef.prototype, 'needs_write', {
+            get: function() { return this[_needs_write]; },
+            set: function(val) { this[_needs_write] = val; }
+        });
+
         /* The object's name (wrapper for key.name). */
         Object.defineProperty(objdef.prototype, 'name', {
             get: function() { return this[_key].name; },
@@ -56,6 +63,10 @@ define(['./util', './key'], function(Util, Key) {
 
         objdef.prototype.on_loaded = function() {
             this[_loaded] = true;
+        };
+
+        objdef.prototype.on_unload = function() {
+            this[_loaded] = false;
         };
 
         objdef.prototype.read = function(s) {

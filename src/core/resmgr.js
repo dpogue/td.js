@@ -79,6 +79,20 @@ define(['./key'], function(Key) {
         return obj;
     };
 
+    ResManager.prototype.unload_object = function(key) {
+        var obj = this.find(key);
+        if (obj === null) {
+            return;
+        }
+
+        obj.on_unload();
+        delete _keylist[key.type][key.index];
+
+        if (this.on_unload_object) {
+            this.on_unload_object(obj);
+        }
+    };
+
     ResManager.prototype.register_key = function(key, obj) {
         if (!(key instanceof Key)) {
             throw 'Invalid key passed to ResManager.register_key!';
@@ -88,6 +102,10 @@ define(['./key'], function(Key) {
             _keylist[key.type] = [];
         }
         _keylist[key.type][key.index] = obj;
+
+        if (this.on_object_created) {
+            this.on_object_created(key);
+        }
     };
 
     ResManager.prototype.find = function(key) {
@@ -152,13 +170,38 @@ define(['./key'], function(Key) {
         }
     };
 
+    ResManager.prototype.get_all_by_type = function(type) {
+        return _keylist[type] || [];
+    };
+
+    ResManager.prototype.game_update = function() {
+        var update = [];
+
+        _keylist.forEach(function(types) {
+            if (types) {
+                types.forEach(function(obj) {
+                    if (obj && obj.needs_write) {
+                        update.push(obj.write());
+                        obj.needs_write = false;
+                    }
+                });
+            }
+        });
+
+        return update;
+    };
+
     ResManager.prototype.game_world = function() {
         var world = [];
 
-        this[_keylist].forEach(function(types) {
-            types.forEach(function(obj) {
-                world.push(obj.write());
-            });
+        _keylist.forEach(function(types) {
+            if (types) {
+                types.forEach(function(obj) {
+                    if (obj) {
+                        world.push(obj.write());
+                    }
+                });
+            }
         });
 
         return world;

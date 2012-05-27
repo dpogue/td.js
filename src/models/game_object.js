@@ -89,7 +89,7 @@ define(['../core/util', '../core/keyedobject', '../core/resmgr'], function(Util,
 
             return s;
         };
-        
+
         return objdef;
     }();
 

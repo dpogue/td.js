@@ -11,16 +11,16 @@ requirejs(['connect', '../src/core/resmgr', '../src/models/player', '../src/mode
         units = [];
 
     // Init sockets.
-    io.sockets.on('connection', connection);
     io.set("log level", 1);
+    io.sockets.on('connection', connection);
+
+    mgr.on_object_unload = function(obj) {
+        io.sockets.emit('delete', obj.key);
+    };
 
     function connection (socket) {
-        // Quick hack to serialize & send player list.
-        var list = [];
-        for (var i in units) {
-            list.push(units[i].write());
-        }
-        socket.emit('list', list);
+        /* Send the current game world state */
+        socket.emit('update', mgr.game_world());
 
         // Create new player.
         var player = mgr.new_object(Player.prototype.ClsIdx),
@@ -48,7 +48,7 @@ requirejs(['connect', '../src/core/resmgr', '../src/models/player', '../src/mode
         socket.set('player', player_key, function () {
             var serialized = player.write();
             socket.emit('confirm', serialized);
-            socket.broadcast.emit('new player', serialized);
+            socket.broadcast.emit('update', serialized);
         });
 
         socket.on('update', function (data) {
@@ -61,5 +61,4 @@ requirejs(['connect', '../src/core/resmgr', '../src/models/player', '../src/mode
             });
         });
     }
-
 });

@@ -1,9 +1,11 @@
 define(["src/models/unit", '../browser_helper'], function(Unit, Helper) {
 
     Unit.prototype.on_loaded = function() {
-        Unit._super.on_loaded.call(this);
+        if (!this.loaded) {
+            this.initDiv('magenta');
+        }
 
-        this.initDiv('magenta');
+        Unit._super.on_loaded.call(this);
     };
 
     Unit.prototype.initDiv = function(color) {

@@ -199,6 +199,7 @@ define([
             if ((vel_x | 0) === 0 && (vel_y | 0) === 0) {
                 return;
             }
+            this.needs_write = true;
 
             var abs_x = (vel_x ^ (vel_x >> 31)) - (vel_x >> 31);
             var abs_y = (vel_y ^ (vel_y >> 31)) - (vel_y >> 31);

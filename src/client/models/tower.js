@@ -1,9 +1,11 @@
 define(["src/models/tower", '../browser_helper'], function(Tower, Helper) {
 
     Tower.prototype.on_loaded = function() {
-        Tower._super.on_loaded.call(this);
+        if (!this.loaded) {
+            this.initElement();
+        }
 
-        this.initElement();
+        Tower._super.on_loaded.call(this);
     };
 
     Tower.prototype.initElement = function() {

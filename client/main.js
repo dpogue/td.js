@@ -3,10 +3,11 @@ require([
     'socket.io',
     'src/core/resmgr',
     'client_creatables',
+    'src/models/player',
     'src/client/models/human_force',
     'src/client/stats',
     'src/client/browser_helper'
-], function(doc, io, mgr, creatables, HumanForce, Stats, Helper) {
+], function(doc, io, mgr, creatables, Player, HumanForce, Stats, Helper) {
 
     var units = [],
         player;
@@ -28,42 +29,47 @@ require([
     function render() {
         if (player) {
             player.update();
-            socket.emit('update', player.write());
+
+            if (player.needs_write) {
+                socket.emit('update', player.write());
+                player.needs_write = false;
+            }
         }
 
-        for (var i in units) {
-            units[i].update();
-        }
+        mgr.get_all_by_type(Player.prototype.ClsIdx).forEach(function(p) {
+            if (!p.key.equals(player.key)) {
+                p.update();
+            }
+        });
     }
 
+
     var socket = io.connect('http://localhost');
+
+    socket.on('delete', function(key) {
+        mgr.unload_object(key);
+    });
+
+    socket.on('update', function(data) {
+        if (data instanceof Array) {
+            mgr.load(data);
+        } else if (typeof data === 'object') {
+            mgr.read(data);
+        } else {
+            console.log('Type of data is ' + typeof data);
+        }
+    });
+
+
+
     socket.on('confirm', function (data) {
         player = mgr.read(data).initDiv("blue");
         player.force = new HumanForce();
-
-    });
-    socket.on('list', function (list) {
-        for (var i in list) {
-            units.push(mgr.read(list[i]));
-        }
-    });
-    socket.on('new player', function (data) {
-        units.push(mgr.read(data));
-    });
-    socket.on('update', function (data) {
-        var updated = mgr.read(data);
-        for (var i in units) {
-            if (units[i].key.equals(updated.key)) {
-                units[i].position_x = updated.position_x;
-                units[i].position_y = updated.position_y;
-                units[i].update();
-            }
-        }
     });
 
     document.addEventListener('keydown', function(evt) {
         if (evt.keyCode == '32') {
-            socket.emit('mktower', '');
+            socket.emit('mktower', {});
         }
     });
 });
