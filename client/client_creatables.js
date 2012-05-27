@@ -1,7 +1,7 @@
 define([
     'src/client/models/unit',
     'src/models/player',
-    'src/models/tower',
+    'src/client/models/tower',
     'src/models/npc'
 ], function(
     Unit,
