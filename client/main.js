@@ -2,11 +2,11 @@ require([
     'domReady!',
     'socket.io',
     'src/core/resmgr',
-    'src/client/models/unit',
+    'client_creatables',
     'src/client/models/human_force',
     'src/client/stats',
     'src/client/browser_helper'
-], function(doc, io, mgr, Unit, HumanForce, Stats, Helper) {
+], function(doc, io, mgr, creatables, HumanForce, Stats, Helper) {
 
     var units = [],
         player;

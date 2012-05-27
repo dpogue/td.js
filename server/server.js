@@ -4,7 +4,7 @@ requirejs.config({
     nodeRequire: require
 });
 
-requirejs(['connect', '../src/core/resmgr', '../src/models/unit'], function (connect, mgr, Unit) {
+requirejs(['connect', '../src/core/resmgr', '../src/models/player'], function (connect, mgr, Player) {
 
     var app = connect().use(connect.static('../')).listen(3000),
         io = require('socket.io').listen(app),
@@ -22,7 +22,7 @@ requirejs(['connect', '../src/core/resmgr', '../src/models/unit'], function (con
         socket.emit('list', list);
 
         // Create new player.
-        var player = mgr.new_object(Unit.prototype.ClsIdx),
+        var player = mgr.new_object(Player.prototype.ClsIdx),
             player_key = units.length;
 
         player.position_x = 50;
