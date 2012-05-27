@@ -18,7 +18,7 @@ define([
 
             this[_reloadDelay] = 1;
             this[_radius] = 10;
-            this[_target] = null;
+            this[_target] = new Key();
         };
         Tower.prototype.ClsIdx = 4;
 
@@ -32,7 +32,7 @@ define([
                 this[_radius] = s.radius;
             }
             if ('target' in s) {
-                this[_target] = Key.read(s.target);
+                this[_target].read(s.target);
             }
         };
 
@@ -41,7 +41,10 @@ define([
 
             s.delay = this[_reloadDelay];
             s.radius = this[_radius];
-            s.target = this[_target] && this[_target].write();
+
+            if (this[_target].valid()) {
+                s.target = this[_target].write();
+            }
 
             return s;
         };

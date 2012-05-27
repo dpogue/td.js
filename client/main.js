@@ -44,11 +44,11 @@ require([
     });
     socket.on('list', function (list) {
         for (var i in list) {
-            units.push(mgr.read(list[i]).initDiv("magenta"));
+            units.push(mgr.read(list[i]));
         }
     });
     socket.on('new player', function (data) {
-        units.push(mgr.read(data).initDiv("magenta"));
+        units.push(mgr.read(data));
     });
     socket.on('update', function (data) {
         var updated = mgr.read(data);
@@ -58,6 +58,12 @@ require([
                 units[i].position_y = updated.position_y;
                 units[i].update();
             }
+        }
+    });
+
+    document.addEventListener('keydown', function(evt) {
+        if (evt.keyCode == '32') {
+            socket.emit('mktower', '');
         }
     });
 });
