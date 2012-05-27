@@ -95,7 +95,11 @@ define(function() {
 
             return  (this.type  === other.type) &&
                     (this.index === other.index);
-        }
+        };
+
+        this.html_id = function() {
+            return _type + '-' + _index;
+        };
     }
 
     return Key;
