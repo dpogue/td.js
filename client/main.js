@@ -38,6 +38,7 @@ require([
     }
 
     var socket = io.connect('http://localhost');
+
     socket.on('confirm', function (data) {
         player = mgr.read(data).initDiv("blue");
         player.force = new HumanForce();
