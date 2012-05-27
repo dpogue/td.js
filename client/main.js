@@ -8,6 +8,7 @@ require([
     'src/client/browser_helper'
 ], function(doc, io, mgr, creatables, HumanForce, Stats, Helper) {
 
+
     var units = [],
         player;
 
