@@ -3,8 +3,6 @@ define(["src/models/tower", '../browser_helper'], function(Tower, Helper) {
     Tower.prototype.on_loaded = function() {
         Tower._super.on_loaded.call(this);
 
-        console.log('Building a tower');
-
         this.initElement();
     };
 
