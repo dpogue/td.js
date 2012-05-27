@@ -152,6 +152,18 @@ define(['./key'], function(Key) {
         }
     };
 
+    ResManager.prototype.game_world = function() {
+        var world = [];
+
+        this[_keylist].forEach(function(types) {
+            types.forEach(function(obj) {
+                world.push(obj.write());
+            });
+        });
+
+        return world;
+    };
+
     var globalResMgr = new ResManager(); /* Global Resource Manager */
 
     return (function() { return globalResMgr; })();

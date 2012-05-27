@@ -1,5 +1,11 @@
 define(["src/models/unit", '../browser_helper'], function(Unit, Helper) {
 
+    Unit.prototype.on_loaded = function() {
+        Unit._super.on_loaded.call(this);
+
+        this.initDiv('magenta');
+    };
+
     Unit.prototype.initDiv = function(color) {
         this.container = document.createElement('div');
         this.container.setAttribute('id', this.key);

@@ -4,7 +4,7 @@ requirejs.config({
     nodeRequire: require
 });
 
-requirejs(['connect', '../src/core/resmgr', '../src/models/player'], function (connect, mgr, Player) {
+requirejs(['connect', '../src/core/resmgr', '../src/models/player', '../src/models/tower'], function (connect, mgr, Player, Tower) {
 
     var app = connect().use(connect.static('../')).listen(3000),
         io = require('socket.io').listen(app),
@@ -30,6 +30,20 @@ requirejs(['connect', '../src/core/resmgr', '../src/models/player'], function (c
         player.position_y = 50;
 
         units.push(player);
+
+        socket.on('mktower', function(data) {
+            socket.get('player', function(err, key) {
+                console.log('Building a tower');
+
+                var current = units[key];
+                var tower = mgr.new_object(Tower.prototype.ClsIdx);
+                tower.position_x = current.position_x;
+                tower.position_y = current.position_y;
+
+                socket.emit('update', tower.write());
+                socket.broadcast.emit('update', tower.write());
+            });
+        });
 
         socket.set('player', player_key, function () {
             var serialized = player.write();
