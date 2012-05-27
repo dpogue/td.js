@@ -12,6 +12,7 @@ requirejs(['connect', '../src/core/resmgr', '../src/models/player'], function (c
 
     // Init sockets.
     io.sockets.on('connection', connection);
+    io.set("log level", 1);
 
     function connection (socket) {
         // Quick hack to serialize & send player list.
