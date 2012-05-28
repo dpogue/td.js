@@ -4,7 +4,7 @@ requirejs.config({
     nodeRequire: require
 });
 
-requirejs(['connect', '../src/core/resmgr', '../src/models/player', '../src/models/tower'], function (connect, mgr, Player, Tower) {
+requirejs(['connect', '../src/core/resmgr', '../src/models/player', '../src/models/tower', '../src/models/map'], function (connect, mgr, Player, Tower, Field) {
 
     var app = connect().use(connect.static('../')).listen(3000),
         io = require('socket.io').listen(app),

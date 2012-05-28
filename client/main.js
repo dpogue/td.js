@@ -8,6 +8,7 @@ require([
     'src/client/browser_helper'
 ], function(doc, io, mgr, creatables, HumanForce, Stats, Helper) {
 
+
     var units = [],
         player;
 
@@ -37,6 +38,7 @@ require([
     }
 
     var socket = io.connect('http://localhost');
+
     socket.on('confirm', function (data) {
         player = mgr.read(data).initDiv("blue");
         player.force = new HumanForce();
