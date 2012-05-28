@@ -2,12 +2,13 @@ require([
     'domReady!',
     'socket.io',
     'src/core/resmgr',
+    'src/core/key',
     'client_creatables',
     'src/models/player',
     'src/client/models/human_force',
     'src/client/stats',
     'src/client/browser_helper'
-], function(doc, io, mgr, creatables, Player, HumanForce, Stats, Helper) {
+], function(doc, io, mgr, Key, creatables, Player, HumanForce, Stats, Helper) {
 
     var units = [],
         player;
@@ -47,7 +48,13 @@ require([
     var socket = io.connect('http://localhost');
 
     socket.on('delete', function(key) {
-        mgr.unload_object(key);
+        var k = new Key();
+        k.read(key);
+        mgr.unload_object(k);
+    });
+
+    mgr.register_callback('unload_object', function(obj) {
+        console.error('Being Awesome and deleting things!');
     });
 
     socket.on('update', function(data) {

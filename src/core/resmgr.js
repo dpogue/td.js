@@ -34,10 +34,17 @@ define(['./key'], function(Key) {
     /** An array of arrays of objects, keyed by type and index. */
     var _keylist = [];
 
+    /** A list of callbacks... like events, but worse. */
+    var _callbacks = {};
+
 
     // The ResManager Object
     /** Manager to keep track of all objects, states, and types. */
     function ResManager() { }
+
+    ResManager.prototype.register_callback = function(name, fn) {
+        _callbacks[name] = fn;
+    };
 
     ResManager.prototype.register_class = function(klass) {
         if (!(klass instanceof Function)) {
@@ -88,8 +95,8 @@ define(['./key'], function(Key) {
         obj.on_unload();
         delete _keylist[key.type][key.index];
 
-        if (this.on_unload_object) {
-            this.on_unload_object(obj);
+        if (_callbacks['unload_object']) {
+            _callbacks['unload_object'](obj);
         }
     };
 
@@ -103,8 +110,8 @@ define(['./key'], function(Key) {
         }
         _keylist[key.type][key.index] = obj;
 
-        if (this.on_object_created) {
-            this.on_object_created(key);
+        if (_callbacks['object_created']) {
+            _callbacks['object_created'](key);
         }
     };
 

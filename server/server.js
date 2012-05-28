@@ -14,9 +14,9 @@ requirejs(['connect', '../src/core/resmgr', '../src/models/player', '../src/mode
     io.set("log level", 1);
     io.sockets.on('connection', connection);
 
-    mgr.on_object_unload = function(obj) {
-        io.sockets.emit('delete', obj.key);
-    };
+    mgr.register_callback('unload_object', function(obj) {
+        io.sockets.emit('delete', obj.key.write());
+    });
 
     function connection (socket) {
         /* Send the current game world state */
@@ -49,6 +49,14 @@ requirejs(['connect', '../src/core/resmgr', '../src/models/player', '../src/mode
             var serialized = player.write();
             socket.emit('confirm', serialized);
             socket.broadcast.emit('update', serialized);
+        });
+
+        socket.on('disconnect', function() {
+            socket.get('player', function (err, key) {
+                mgr.unload_object(units[key].key);
+
+                delete units[key];
+            });
         });
 
         socket.on('update', function (data) {
